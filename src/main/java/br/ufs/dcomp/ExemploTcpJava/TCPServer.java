@@ -22,12 +22,19 @@ public class TCPServer{
             byte[] buf = new byte[20]; // buffer de recepção
 
             System.out.print("[ Aguardando recebimento de mensagem   ..............  ");
-            is.read(buf); // Operação bloqueante (aguardando chegada de dados)
+            int t = is.read(buf); // Operação bloqueante (aguardando chegada de dados)
             System.out.println("[OK] ]");
             
-            String msg = new String(buf); // Mapeando vetor de bytes recebido para String
+            String msg = new String(buf, 0, t); // Mapeando vetor de bytes recebido para String
             
             System.out.println("  Mensagem recebida: "+ msg);
+            
+            String msgResposta = "Olá, cliente!!! Mensagem recebida!";
+            byte[] bufResposta = msgResposta.getBytes(); // Obtendo a respresntação em bytes da mensagem
+
+            System.out.print("[ Enviando resposta    ..............................  ");
+            os.write(bufResposta);
+            System.out.println("[OK] ]");
         }catch(Exception e){System.out.println(e);}    
         System.out.println("[ FIM ]");
     }
