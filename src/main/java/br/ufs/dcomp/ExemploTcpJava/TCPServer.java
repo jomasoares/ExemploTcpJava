@@ -5,6 +5,8 @@ package br.ufs.dcomp.ExemploTcpJava;
 
 import java.net.*;
 import java.io.*;
+import java.util.Scanner;
+
 public class TCPServer{
     public static void main(String[] args){
         
@@ -19,22 +21,20 @@ public class TCPServer{
             
             InputStream is = sock.getInputStream(); //Canal de entrada de dados
             OutputStream os = sock.getOutputStream(); //Canal de saída de dados
-            byte[] buf = new byte[20]; // buffer de recepção
+            byte[] buf = new byte[100]; // buffer de recepção
+            Scanner se = new Scanner(System.in);
 
-            System.out.print("[ Aguardando recebimento de mensagem   ..............  ");
-            int t = is.read(buf); // Operação bloqueante (aguardando chegada de dados)
-            System.out.println("[OK] ]");
+            while(true){
+                int t = is.read(buf); // Operação bloqueante (aguardando chegada de dados)
+                String msg = new String(buf, 0, t); // Mapeando vetor de bytes recebido para String
+                System.out.println("Cliente: " + msg);
             
-            String msg = new String(buf, 0, t); // Mapeando vetor de bytes recebido para String
-            
-            System.out.println("  Mensagem recebida: "+ msg);
-            
-            String msgResposta = "Olá, cliente!!! Mensagem recebida!";
-            byte[] bufResposta = msgResposta.getBytes(); // Obtendo a respresntação em bytes da mensagem
+                System.out.print("Servidor: ");
+                msg = se.nextLine();
+                byte[] bufResposta = msg.getBytes();
+                os.write(bufResposta);
+            }
 
-            System.out.print("[ Enviando resposta    ..............................  ");
-            os.write(bufResposta);
-            System.out.println("[OK] ]");
         }catch(Exception e){System.out.println(e);}    
         System.out.println("[ FIM ]");
     }

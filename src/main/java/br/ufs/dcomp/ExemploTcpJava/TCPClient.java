@@ -5,6 +5,7 @@ package br.ufs.dcomp.ExemploTcpJava;
 
 import java.net.*;
 import java.io.*;
+import java.util.Scanner;
 public class TCPClient{
     public static void main(String[] args){
         try {
@@ -14,21 +15,20 @@ public class TCPClient{
             
             InputStream is = sock.getInputStream(); // Canal de entrada de dados
             OutputStream os = sock.getOutputStream(); // Canal de saída de dados
-            String msg = "Olá, DCOMP!!!";
-            byte[] buf = msg.getBytes(); // Obtendo a respresntação em bytes da mensagem
-
-            System.out.print("[ Enviando mensagem    ..............................  ");
-            os.write(buf);
-            System.out.println("[OK] ]");
+            byte[] buf = new byte[100]; // buffer de recepção
+            Scanner se = new Scanner(System.in);
             
-            byte[] bufResposta = new byte[100];
-            System.out.print("[ Esperando resposta    ..............................  ");
-            int t = is.read(bufResposta); // Operação bloqueante (aguardando chegada de dados)
-            System.out.println("[OK] ]");
+            while(true){
+                System.out.print("Cliente: ");
+                String msg = se.nextLine();
+                byte[] bufResposta = msg.getBytes();
+                os.write(bufResposta);
+                
+                int t = is.read(buf); // Operação bloqueante (aguardando chegada de dados)
+                msg = new String(buf, 0, t); // Mapeando vetor de bytes recebido para String
+                System.out.println("Servidor: " + msg);
+            }
             
-            String msgResposta = new String(bufResposta, 0, t); // Mapeando vetor de bytes recebido para String
-            
-            System.out.println("  Resposta recebida: "+ msgResposta);
         }catch(Exception e){System.out.println(e);}    
         System.out.println("[ FIM ]");
     }
